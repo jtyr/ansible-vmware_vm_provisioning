@@ -1,0 +1,39 @@
+---
+
+# Whether to show logs or not
+vmware_vm_provisioning_force_show_log: no
+
+# List of VMs to provision (see README for details)
+vmware_vm_provisioning_vms: []
+
+# Default values (see README for details)
+#vmware_vm_provisioning_annotation: null
+#vmware_vm_provisioning_cdrom: null
+#vmware_vm_provisioning_cluster: null
+#vmware_vm_provisioning_customization: null
+#vmware_vm_provisioning_customization_spec: null
+#vmware_vm_provisioning_customvalues: null
+#vmware_vm_provisioning_datacenter: null
+#vmware_vm_provisioning_disk: null
+#vmware_vm_provisioning_esxi_hostname: null
+#vmware_vm_provisioning_folder: null
+#vmware_vm_provisioning_force: null
+#vmware_vm_provisioning_guest_id: null
+#vmware_vm_provisioning_hardware: null
+#vmware_vm_provisioning_hostname: null
+#vmware_vm_provisioning_is_template: null
+#vmware_vm_provisioning_linked_clone: null
+#vmware_vm_provisioning_name_match: null
+#vmware_vm_provisioning_networks: null
+#vmware_vm_provisioning_password: null
+#vmware_vm_provisioning_port: null
+#vmware_vm_provisioning_resource_pool: null
+#vmware_vm_provisioning_snapshot_src: null
+#vmware_vm_provisioning_state_change_timeout: null
+#vmware_vm_provisioning_state: null
+#vmware_vm_provisioning_template: null
+#vmware_vm_provisioning_username: null
+#vmware_vm_provisioning_uuid: null
+#vmware_vm_provisioning_validate_certs: null
+#vmware_vm_provisioning_vapp_properties: null
+#vmware_vm_provisioning_wait_for_ip_address: null

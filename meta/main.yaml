@@ -1,0 +1,20 @@
+---
+
+galaxy_info:
+  author: Jiri Tyr
+  description: Role which helps to provision VMs on VMware vCenter/ESXi.
+  license: MIT
+  min_ansible_version: 2.6
+  platforms:
+    - name: EL
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+  galaxy_tags:
+    - system
+dependencies: []

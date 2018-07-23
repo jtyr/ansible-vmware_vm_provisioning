@@ -1,0 +1,76 @@
+---
+
+- name: Power off VM ({{ vm.name }})
+  vmware_guest:
+    cluster: "{{ vm.cluster | default(vmware_vm_provisioning_cluster | default(omit)) }}"
+    datacenter: "{{ vm.datacenter | default(vmware_vm_provisioning_datacenter | default(omit)) }}"
+    esxi_hostname: "{{ vm.esxi_hostname | default(vmware_vm_provisioning_esxi_hostname | default(omit)) }}"
+    folder: "{{ vm.folder | default(vmware_vm_provisioning_folder | default(omit)) }}"
+    force: "{{ vm.force | default(vmware_vm_provisioning_force | default(omit)) }}"
+    hostname: "{{ vm.vcenter | default(vmware_vm_provisioning_hostname | default(omit)) }}"
+    name: "{{ vm.name }}"
+    name_match: "{{ vm.name_match | default(vmware_vm_provisioning_name_match | default(omit)) }}"
+    password: "{{ vm.password | default(vmware_vm_provisioning_password | default(omit)) }}"
+    port: "{{ vm.port | default(vmware_vm_provisioning_port | default(omit)) }}"
+    state_change_timeout: "{{ vm.state_change_timeout | default(vmware_vm_provisioning_state_change_timeout | default(omit)) }}"
+    state: poweredoff
+    username: "{{ vm.username | default(vmware_vm_provisioning_username | default(omit)) }}"
+    validate_certs: "{{ vm.validate_certs | default(vmware_vm_provisioning_validate_certs | default(omit)) }}"
+  when: >
+    'state' in vm and
+    vm.state in ['absent', 'rebuilt']
+  failed_when: false
+
+- name: Remove VM ({{ vm.name }})
+  vmware_guest:
+    cluster: "{{ vm.cluster | default(vmware_vm_provisioning_cluster | default(omit)) }}"
+    datacenter: "{{ vm.datacenter | default(vmware_vm_provisioning_datacenter | default(omit)) }}"
+    esxi_hostname: "{{ vm.esxi_hostname | default(vmware_vm_provisioning_esxi_hostname | default(omit)) }}"
+    folder: "{{ vm.folder | default(vmware_vm_provisioning_folder | default(omit)) }}"
+    force: "{{ vm.force | default(vmware_vm_provisioning_force | default(omit)) }}"
+    hostname: "{{ vm.vcenter | default(vmware_vm_provisioning_hostname | default(omit)) }}"
+    name: "{{ vm.name }}"
+    name_match: "{{ vm.name_match | default(vmware_vm_provisioning_name_match | default(omit)) }}"
+    password: "{{ vm.password | default(vmware_vm_provisioning_password | default(omit)) }}"
+    port: "{{ vm.port | default(vmware_vm_provisioning_port | default(omit)) }}"
+    state_change_timeout: "{{ vm.state_change_timeout | default(vmware_vm_provisioning_state_change_timeout | default(omit)) }}"
+    state: absent
+    username: "{{ vm.username | default(vmware_vm_provisioning_username | default(omit)) }}"
+    validate_certs: "{{ vm.validate_certs | default(vmware_vm_provisioning_validate_certs | default(omit)) }}"
+  when: >
+    'state' in vm and
+    vm.state in ['absent', 'rebuilt']
+
+- name: Provision VM ({{ vm.name }})
+  vmware_guest:
+    annotation: "{{ vm.annotation | default(vmware_vm_provisioning_annotation | default(omit)) }}"
+    cdrom: "{{ vm.cdrom | default(vmware_vm_provisioning_cdrom | default(omit)) }}"
+    cluster: "{{ vm.cluster | default(vmware_vm_provisioning_cluster | default(omit)) }}"
+    customization: "{{ vm.customization | default(vmware_vm_provisioning_customization | default(omit)) }}"
+    customization_spec: "{{ vm.customization_spec | default(vmware_vm_provisioning_customization_spec | default(omit)) }}"
+    customvalues: "{{ vm.customvalues | default(vmware_vm_provisioning_customvalues | default(omit)) }}"
+    datacenter: "{{ vm.datacenter | default(vmware_vm_provisioning_datacenter | default(omit)) }}"
+    disk: "{{ vm.disks | default(vmware_vm_provisioning_disk | default(omit)) }}"
+    esxi_hostname: "{{ vm.esxi_hostname | default(vmware_vm_provisioning_esxi_hostname | default(omit)) }}"
+    folder: "{{ vm.folder | default(vmware_vm_provisioning_folder | default(omit)) }}"
+    force: "{{ vm.force | default(vmware_vm_provisioning_force | default(omit)) }}"
+    guest_id: "{{ vm.guest_id | default(vmware_vm_provisioning_guest_id | default(omit)) }}"
+    hardware: "{{ vm.hardware | default(vmware_vm_provisioning_hardware | default(omit)) }}"
+    hostname: "{{ vm.vcenter | default(vmware_vm_provisioning_hostname | default(omit)) }}"
+    is_template: "{{ vm.is_template | default(vmware_vm_provisioning_is_template | default(omit)) }}"
+    linked_clone: "{{ vm.linked_clone | default(vmware_vm_provisioning_linked_clone | default(omit)) }}"
+    name: "{{ vm.name }}"
+    name_match: "{{ vm.name_match | default(vmware_vm_provisioning_name_match | default(omit)) }}"
+    networks: "{{ vm.networks | default(vmware_vm_provisioning_networks | default(omit)) }}"
+    password: "{{ vm.password | default(vmware_vm_provisioning_password | default(omit)) }}"
+    port: "{{ vm.port | default(vmware_vm_provisioning_port | default(omit)) }}"
+    resource_pool: "{{ vm.resource_pool | default(vmware_vm_provisioning_resource_pool | default(omit)) }}"
+    snapshot_src: "{{ vm.snapshot_src | default(vmware_vm_provisioning_snapshot_src | default(omit)) }}"
+    state: "{{ omit if 'state' in vm and vm.state == 'rebuilt' else vm.state | default(vmware_vm_provisioning_state | default(omit)) }}"
+    state_change_timeout: "{{ vm.state_change_timeout | default(vmware_vm_provisioning_state_change_timeout | default(omit)) }}"
+    template: "{{ vm.template | default(vmware_vm_provisioning_template | default(omit)) }}"
+    username: "{{ vm.username | default(vmware_vm_provisioning_username | default(omit)) }}"
+    uuid: "{{ vm.uuid | default(vmware_vm_provisioning_uuid | default(omit)) }}"
+    validate_certs: "{{ vm.validate_certs | default(vmware_vm_provisioning_validate_certs | default(omit)) }}"
+    vapp_properties: "{{ vm.vapp_properties | default(vmware_vm_provisioning_vapp_properties | default(omit)) }}"
+    wait_for_ip_address: "{{ vm.wait_for_ip_address | default(vmware_vm_provisioning_wait_for_ip_address | default(omit)) }}"
