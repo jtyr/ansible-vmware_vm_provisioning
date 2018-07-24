@@ -211,9 +211,6 @@ Examples
       tags: vmware_vm_provisioning
       when: >
         inventory_hostname == 'localhost'
-
-# We can import another playbook to configugure the VM right after it was provisioned
-- import_playbook: site.yaml
 ```
 
 In order to provision only certain VMs, you can use the following approach:
@@ -230,6 +227,20 @@ ansible-playbook \
   -e '{ vmware_vm_provisioning_limit: "{{ ansible_play_hosts }}" }' \
   # The name of the playbook from the examples above
   vm_provisioning.yaml
+```
+
+We can also use execute Ansible with multiple playbooks to configure the VM
+right after it was provisioned:
+
+```shell
+ansible-playbook \
+  -i localhost, \
+  -i hosts \
+  -l '~(localhost|test0[13])' \
+  -e '{ vmware_vm_provisioning_limit: "{{ ansible_play_hosts }}" }' \
+  vm_provisioning.yaml \
+  # That's the second playbook which configures the provisioned VM(s)
+  site.yaml
 ```
 
 
