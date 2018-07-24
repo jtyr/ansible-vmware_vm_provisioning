@@ -74,3 +74,6 @@
     validate_certs: "{{ vm.validate_certs | default(vmware_vm_provisioning_validate_certs | default(omit)) }}"
     vapp_properties: "{{ vm.vapp_properties | default(vmware_vm_provisioning_vapp_properties | default(omit)) }}"
     wait_for_ip_address: "{{ vm.wait_for_ip_address | default(vmware_vm_provisioning_wait_for_ip_address | default(omit)) }}"
+  when: >
+    'state' not in vm or
+    vm.state != 'absent'
