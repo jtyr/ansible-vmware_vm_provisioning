@@ -67,8 +67,40 @@ Examples
         hadrware:
           num_cpus: 2
           memory_mb: 16384
+          nested_virt: yes
+
+      # Third VM
+      - name: test03
+        hostname: vcenter.example.com
+        username: administrator@example.com
+        password: p4ssw0rd
+        validate_certs: no
+        datacenter: DC2
+        cluster: Cluster2
+        folder: /DC2/vm
+        disks:
+          - size_gb: 20
+            autoselect_datastore: yes
+          - size_gb: 500
+            type: thin
+            autoselect_datastore: yes
+        network:
+          - name: VM Network
+            ip: 10.0.0.179
+            netmask: 255.255.255.0
+            gateway: 10.0.0.1
+        hadrware:
+          num_cpus: 2
+          memory_mb: 16384
+          nested_virt: yes
+        # Special state implemented only by this role
+        # It will power off, remove and create the VM
+        state: rebuilt
   roles:
-    - vmware_vm_provisioning
+    - role: vmware_vm_provisioning
+      tags: vmware_vm_provisioning
+      when: >
+        inventory_hostname == 'localhost'
 
 - name: The same like above but with reusable variables
   hosts: all
@@ -79,10 +111,22 @@ Examples
     vmware_vm_provisioning_password: p4ssw0rd
     vmware_vm_provisioning_validate_certs: no
 
-    # Disk configuration
-    vmware_vm_provisioning_disks__default: &vmware_vm_provisioning_disks__default
-      size_gb: 20
+    # Default template
+    vmware_vm_provisioning_template: CentOS-7-1525432016
+
+    # Default HW configuration
+    vmware_vm_provisioning_hardware: &vmware_vm_provisioning_hardware
+      num_cpus: 2
+      memory_mb: 2048
+
+    # Disk configuration (size corresponds with the disk size from the template)
+    vmware_vm_provisioning_disk__image: &vmware_vm_provisioning_disk__image
+      size_gb: 5
       autoselect_datastore: yes
+
+    # Default list of disks
+    vmware_vm_provisioning_disk:
+      - "{{ vmware_vm_provisioning_disk__image }}"
 
     # Network configuration for MyNET1
     vmware_vm_provisioning_networks__mynet1: &vmware_vm_provisioning_networks__mynet1
@@ -96,35 +140,32 @@ Examples
         netmask: 255.255.255.0
         gateway: 10.0.0.1
 
-    # Default HW configuration
-    vmware_vm_provisioning_hardware: &vmware_vm_provisioning_hardware
-      num_cpus: 2
-      memory_mb: 2048
+    # DC1 - Cluster1
+    vmware_vm_provisioning__dc1_cluster1: &vmware_vm_provisioning__dc1_cluster1
+      datacenter: DC1
+      cluster: Cluster1
+      folder: /DC1/vm
 
-    # Default template
-    vmware_vm_provisioning_template: CentOS-7-1525432016
+    # DC2 - Cluster2
+    vmware_vm_provisioning__dc2_cluster2: &vmware_vm_provisioning__dc2_cluster2
+      datacenter: DC2
+      cluster: Cluster2
+      folder: /DC2/vm
 
     # List of VMs to provision
     vmware_vm_provisioning_vms:
       # First VM
-      - name: test01
-        datacenter: DC1
-        cluster: Cluster1
-        folder: /DC1/vm
+      - <<: *vmware_vm_provisioning__dc1_cluster1
+        name: test01
         networks:
           # Include the default network configuration
           - <<: *vmware_vm_provisioning_networks__mynet1
             # And jsut add the IP
             ip: 192.168.1.178
-        disks:
-          # Include the default disk configuration
-          - <<: *vmware_vm_provisioning_disks__default
 
       # Second VM
-      - name: test02
-        datacenter: DC2
-        cluster: Cluster2
-        folder: /DC2/vm
+      - <<: *vmware_vm_provisioning__dc2_cluster2
+        name: test02
         networks:
           # Include the default network configuration
           - <<: *vmware_vm_provisioning_networks__mynet2
@@ -132,7 +173,7 @@ Examples
             ip: 10.0.0.178
         disks:
           # Include the default disk configuration
-          - <<: *vmware_vm_provisioning_disks__default
+          - <<: *vmware_vm_provisioning_disk__image
           # Add one more disk (500G)
           - size_gb: 500
             type: thin
@@ -144,8 +185,51 @@ Examples
           memory_mb: 16384
           # And add one more additional option
           nested_virt: yes
+
+      # Third VM
+      - <<: *vmware_vm_provisioning__dc2_cluster2
+        name: test03
+        networks:
+          # Different way of setting the IP
+          - "{{ vmware_vm_provisioning_networks__mynet2 | combine({ 'ip': '10.0.0.179' }) }}"
+        # Different way of adding an extra disk
+        disks: "{{
+          vmware_vm_provisioning_disk +
+          [{ 'size_gb': 500,
+             'type': 'thin',
+             'autoselect_datastore': true }] }}"
+        # Different way of setting the HW params
+        hardware: "{{
+          vmware_vm_provisioning_hardware | combine({
+            'memory_mb': 16384,
+            'nested_virt': true }) }}"
+        # Special state implemented only by this role
+        # It will power off, remove and create the VM
+        state: rebuilt
   roles:
-    - vmware_vm_provisioning
+    - role: vmware_vm_provisioning
+      tags: vmware_vm_provisioning
+      when: >
+        inventory_hostname == 'localhost'
+
+# We can import another playbook to configugure the VM right after it was provisioned
+- import_playbook: site.yaml
+```
+
+In order to provision only certain VMs, you can use the following approach:
+
+```shell
+ansible-playbook \
+  # Ad-hoc inventory which will take care of the VM provisioning (note the comma!)
+  -i localhost, \
+  # Standard inventory with the VMs we want to provision
+  -i hosts \
+  # Limit execution only for VMs test01 and test03 and for the ad-hoc inventory (localhost)
+  -l '~(localhost|test0[13])' \
+  # Role limit variable using the play's list of hosts
+  -e '{ vmware_vm_provisioning_limit: "{{ ansible_play_hosts }}" }' \
+  # The name of the playbook from the examples above
+  vm_provisioning.yaml
 ```
 
 
