@@ -5,10 +5,12 @@
   when:
     vmware_vm_provisioning_limit is not defined or (
       vmware_vm_provisioning_limit is string and
-      vmware_vm_provisioning_limit == vm.name
+      vmware_vm_provisioning_limit == vm.name and
+      vmware_vm_provisioning_limit != 'localhost'
     ) or (
       vmware_vm_provisioning_limit is not string and
-      vm.name in vmware_vm_provisioning_limit
+      vm.name in vmware_vm_provisioning_limit and
+      vm.name != 'localhost'
     )
   with_items: "{{ vmware_vm_provisioning_vms }}"
   loop_control:
