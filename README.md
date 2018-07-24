@@ -1,7 +1,7 @@
 vmware_vm_provisioning
 ======================
 
-Ansible role which helps to provision VMs on VMware vCenter/ESXi.
+Ansible role which helps to provision VMs on VMware vCenter.
 
 The configuration of the role is done in such way that it should not be
 necessary to change the role for any kind of configuration. All can be
