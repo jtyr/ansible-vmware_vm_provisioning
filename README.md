@@ -20,6 +20,8 @@ Examples
 
 - name: Example of how to provision VMs (all in one data structure)
   hosts: all
+  connection: local
+  gather_facts: no
   vars:
     # List of VMs to provision
     vmware_vm_provisioning_vms:
@@ -104,6 +106,8 @@ Examples
 
 - name: The same like above but with reusable variables
   hosts: all
+  connection: local
+  gather_facts: no
   vars:
     # Default login details
     vmware_vm_provisioning_hostname: vcenter.example.com
@@ -209,22 +213,16 @@ Examples
   roles:
     - role: vmware_vm_provisioning
       tags: vmware_vm_provisioning
-      when: >
-        inventory_hostname == 'localhost'
 ```
 
 In order to provision only certain VMs, you can use the following approach:
 
 ```shell
 ansible-playbook \
-  # Ad-hoc inventory which will take care of the VM provisioning (note the comma!)
-  -i localhost, \
-  # Standard inventory with the VMs we want to provision
+  # Inventory with the VMs we want to provision
   -i hosts \
-  # Limit execution only for VMs test01 and test03 and for the ad-hoc inventory (localhost)
-  -l '~(localhost|test0[13])' \
-  # Role limit variable using the play's list of hosts
-  -e '{ vmware_vm_provisioning_limit: "{{ ansible_play_hosts }}" }' \
+  # Limit execution only for VMs test01 and test03
+  -l '~test0[13]' \
   # The name of the playbook from the examples above
   vm_provisioning.yaml
 ```
@@ -234,10 +232,8 @@ right after it was provisioned:
 
 ```shell
 ansible-playbook \
-  -i localhost, \
   -i hosts \
-  -l '~(localhost|test0[13])' \
-  -e '{ vmware_vm_provisioning_limit: "{{ ansible_play_hosts }}" }' \
+  -l '~test0[13]' \
   vm_provisioning.yaml \
   # That's the second playbook which configures the provisioned VM(s)
   site.yaml

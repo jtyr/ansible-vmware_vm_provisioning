@@ -1,7 +1,8 @@
 ---
 
 - name: Power off VM ({{ vm.name }})
-  vmware_guest:
+  local_action:
+    module: vmware_guest
     cluster: "{{ vm.cluster | default(vmware_vm_provisioning_cluster | default(omit)) }}"
     datacenter: "{{ vm.datacenter | default(vmware_vm_provisioning_datacenter | default(omit)) }}"
     esxi_hostname: "{{ vm.esxi_hostname | default(vmware_vm_provisioning_esxi_hostname | default(omit)) }}"
@@ -22,7 +23,8 @@
   failed_when: false
 
 - name: Remove VM ({{ vm.name }})
-  vmware_guest:
+  local_action:
+    module: vmware_guest
     cluster: "{{ vm.cluster | default(vmware_vm_provisioning_cluster | default(omit)) }}"
     datacenter: "{{ vm.datacenter | default(vmware_vm_provisioning_datacenter | default(omit)) }}"
     esxi_hostname: "{{ vm.esxi_hostname | default(vmware_vm_provisioning_esxi_hostname | default(omit)) }}"
@@ -42,7 +44,8 @@
     vm.state in ['absent', 'rebuilt']
 
 - name: Provision VM ({{ vm.name }})
-  vmware_guest:
+  local_action:
+    module: vmware_guest
     annotation: "{{ vm.annotation | default(vmware_vm_provisioning_annotation | default(omit)) }}"
     cdrom: "{{ vm.cdrom | default(vmware_vm_provisioning_cdrom | default(omit)) }}"
     cluster: "{{ vm.cluster | default(vmware_vm_provisioning_cluster | default(omit)) }}"
