@@ -46,7 +46,13 @@
     annotation: "{{ vm.annotation | default(vmware_vm_provisioning_annotation | default(omit)) }}"
     cdrom: "{{ vm.cdrom | default(vmware_vm_provisioning_cdrom | default(omit)) }}"
     cluster: "{{ vm.cluster | default(vmware_vm_provisioning_cluster | default(omit)) }}"
-    customization: "{{ vm.customization | default(vmware_vm_provisioning_customization | default(omit)) }}"
+    customization: "{{
+      {
+        'hostname': vm.name.split('.')[0],
+        'domain': vm.name.split('.')[1:] | join('.')
+      } | combine(
+        vm.customization | default(vmware_vm_provisioning_customization | default({}))
+      ) }}"
     customization_spec: "{{ vm.customization_spec | default(vmware_vm_provisioning_customization_spec | default(omit)) }}"
     customvalues: "{{ vm.customvalues | default(vmware_vm_provisioning_customvalues | default(omit)) }}"
     datacenter: "{{ vm.datacenter | default(vmware_vm_provisioning_datacenter | default(omit)) }}"
