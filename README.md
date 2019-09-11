@@ -34,6 +34,7 @@ Examples
         datacenter: DC1
         cluster: Cluster1
         folder: /DC1/vm
+        template: CentOS-7-1525432016
         disks:
           - size_gb: 20
             autoselect_datastore: yes
@@ -55,6 +56,7 @@ Examples
         datacenter: DC2
         cluster: Cluster2
         folder: /DC2/vm
+        template: CentOS-7-1525432016
         disks:
           - size_gb: 20
             autoselect_datastore: yes
