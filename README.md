@@ -241,14 +241,13 @@ ansible-playbook \
   site.yaml
 ```
 
+Use `--forks` option to controll how many VMs should be managed in parallel.
+
 
 Role variables
 --------------
 
 ```yaml
-# Whether to show logs or not
-vmware_vm_provisioning_force_show_log: no
-
 # List of VMs to provision (see README for details)
 vmware_vm_provisioning_vms: []
 
