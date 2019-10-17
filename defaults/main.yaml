@@ -34,3 +34,6 @@ vmware_vm_provisioning_vms: []
 #vmware_vm_provisioning_validate_certs: null
 #vmware_vm_provisioning_vapp_properties: null
 #vmware_vm_provisioning_wait_for_ip_address: null
+
+# SCSI controller ID used for the disk detachment
+#vmware_vm_provisioning_scsi_controller: 0

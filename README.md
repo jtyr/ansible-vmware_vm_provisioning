@@ -183,6 +183,8 @@ Examples
           # Add one more disk (500G)
           - size_gb: 500
             type: thin
+            # Detach disk before rebuilding the VM
+            _userdata: yes
             autoselect_datastore: yes
         hardware:
           # Include the default hardware settings
@@ -203,6 +205,7 @@ Examples
           vmware_vm_provisioning_disk +
           [{ 'size_gb': 500,
              'type': 'thin',
+             '_userdata': true,
              'autoselect_datastore': true }] }}"
         # Different way of setting the HW params
         hardware: "{{
@@ -282,6 +285,9 @@ vmware_vm_provisioning_vms: []
 #vmware_vm_provisioning_validate_certs: null
 #vmware_vm_provisioning_vapp_properties: null
 #vmware_vm_provisioning_wait_for_ip_address: null
+
+# SCSI controller ID used for the disk detachment
+#vmware_vm_provisioning_scsi_controller: 0
 ```
 
 
