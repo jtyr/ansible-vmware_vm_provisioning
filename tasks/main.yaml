@@ -7,6 +7,24 @@
     vmware_vm_provisioning_vms | selectattr('name', 'equalto', inventory_hostname) | list | length > 0
 
 - block:
+    - name: Check if the VM already exists
+      local_action:
+        module: vmware_guest_facts
+        datacenter: "{{ vmware_vm_provisioning_vm.datacenter | default(vmware_vm_provisioning_datacenter | default(omit)) }}"
+        folder: "{{ vmware_vm_provisioning_vm.folder | default(vmware_vm_provisioning_folder | default(omit)) }}"
+        hostname: "{{ vmware_vm_provisioning_vm.hostname | default(vmware_vm_provisioning_hostname | default(omit)) }}"
+        name: "{{ vmware_vm_provisioning_vm.name }}"
+        password: "{{ vmware_vm_provisioning_vm.password | default(vmware_vm_provisioning_password | default(omit)) }}"
+        port: "{{ vmware_vm_provisioning_vm.port | default(vmware_vm_provisioning_port | default(omit)) }}"
+        username: "{{ vmware_vm_provisioning_vm.username | default(vmware_vm_provisioning_username | default(omit)) }}"
+        validate_certs: "{{ vmware_vm_provisioning_vm.validate_certs | default(vmware_vm_provisioning_validate_certs | default(omit)) }}"
+        schema: vsphere
+        properties:
+          - config.uuid
+      changed_when: no
+      failed_when: no
+      register: vmware_vm_provisioning_exists
+
     - name: Power off VM
       local_action:
         module: vmware_guest
@@ -25,9 +43,11 @@
         username: "{{ vmware_vm_provisioning_vm.username | default(vmware_vm_provisioning_username | default(omit)) }}"
         validate_certs: "{{ vmware_vm_provisioning_vm.validate_certs | default(vmware_vm_provisioning_validate_certs | default(omit)) }}"
       when: >
-        'state' in vmware_vm_provisioning_vm and
-        vmware_vm_provisioning_vm.state in ['absent', 'rebuilt'] or
-        vmware_vm_provisioning_state in ['absent', 'rebuilt']
+        'instance' in vmware_vm_provisioning_exists and (
+            'state' in vmware_vm_provisioning_vm and
+            vmware_vm_provisioning_vm.state in ['absent', 'rebuilt'] or
+            vmware_vm_provisioning_state in ['absent', 'rebuilt']
+        )
       failed_when: false
 
     - block:
@@ -83,9 +103,11 @@
           loop_control:
             extended: yes
       when: >
-        'state' in vmware_vm_provisioning_vm and
-        vmware_vm_provisioning_vm.state == 'rebuilt' or
-        vmware_vm_provisioning_state == 'rebuilt'
+        'instance' in vmware_vm_provisioning_exists and (
+            'state' in vmware_vm_provisioning_vm and
+            vmware_vm_provisioning_vm.state == 'rebuilt' or
+            vmware_vm_provisioning_state == 'rebuilt'
+        )
 
     - name: Remove VM
       local_action:
@@ -105,9 +127,11 @@
         username: "{{ vmware_vm_provisioning_vm.username | default(vmware_vm_provisioning_username | default(omit)) }}"
         validate_certs: "{{ vmware_vm_provisioning_vm.validate_certs | default(vmware_vm_provisioning_validate_certs | default(omit)) }}"
       when: >
-        'state' in vmware_vm_provisioning_vm and
-        vmware_vm_provisioning_vm.state in ['absent', 'rebuilt'] or
-        vmware_vm_provisioning_state in ['absent', 'rebuilt']
+        'instance' in vmware_vm_provisioning_exists and (
+            'state' in vmware_vm_provisioning_vm and
+            vmware_vm_provisioning_vm.state in ['absent', 'rebuilt'] or
+            vmware_vm_provisioning_state in ['absent', 'rebuilt']
+        )
 
     - name: Provision VM
       local_action:
