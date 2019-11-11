@@ -97,6 +97,16 @@ Examples
           num_cpus: 2
           memory_mb: 16384
           nested_virt: yes
+        # Keep the MAC address from the original VM even after the rebuild
+        # {macAddress}
+        #    - filters out devices which have macAddress key
+        # {macAddress==aa:bb:cc:dd:ee:ff}
+        #    - filters out devices which have macAddress value rqual to that address
+        # {macAddress=~aa:bb:cc:dd:ee:f[0-9]}
+        #    - filters out devices which have macAddress value matching the regexp
+        add_facts:
+          - src: config.hardware.device.{macAddress}.0.macAddress
+            dest: networks.0.mac
         # Special state implemented only by this role
         # It will power off, remove and create the VM
         state: rebuilt
@@ -212,6 +222,16 @@ Examples
           vmware_vm_provisioning_hardware | combine({
             'memory_mb': 16384,
             'nested_virt': true }) }}"
+        # Keep the MAC address from the original VM even after the rebuild
+        # {macAddress}
+        #    - filters out devices which have macAddress key
+        # {macAddress==aa:bb:cc:dd:ee:ff}
+        #    - filters out devices which have macAddress value rqual to that address
+        # {macAddress=~aa:bb:cc:dd:ee:f[0-9]}
+        #    - filters out devices which have macAddress value matching the regexp
+        add_facts:
+          - src: config.hardware.device.{macAddress}.0.macAddress
+            dest: networks.0.mac
         # Special state implemented only by this role
         # It will power off, remove and create the VM
         state: rebuilt

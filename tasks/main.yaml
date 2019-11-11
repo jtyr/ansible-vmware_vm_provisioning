@@ -2,7 +2,7 @@
 
 - name: Set variable with VM details
   set_fact:
-    vmware_vm_provisioning_vm: "{{ (vmware_vm_provisioning_vms | selectattr('name', 'equalto', inventory_hostname) | list)[0] }}"
+    vmware_vm_provisioning_vm_tmp: "{{ (vmware_vm_provisioning_vms | selectattr('name', 'equalto', inventory_hostname) | list)[0] }}"
   when: >
     vmware_vm_provisioning_vms | selectattr('name', 'equalto', inventory_hostname) | list | length > 0
 
@@ -10,18 +10,27 @@
     - name: Check if the VM already exists
       local_action:
         module: vmware_guest_facts
-        datacenter: "{{ vmware_vm_provisioning_vm.datacenter | default(vmware_vm_provisioning_datacenter | default(omit)) }}"
-        folder: "{{ vmware_vm_provisioning_vm.folder | default(vmware_vm_provisioning_folder | default(omit)) }}"
-        hostname: "{{ vmware_vm_provisioning_vm.hostname | default(vmware_vm_provisioning_hostname | default(omit)) }}"
-        name: "{{ vmware_vm_provisioning_vm.name }}"
-        password: "{{ vmware_vm_provisioning_vm.password | default(vmware_vm_provisioning_password | default(omit)) }}"
-        port: "{{ vmware_vm_provisioning_vm.port | default(vmware_vm_provisioning_port | default(omit)) }}"
-        username: "{{ vmware_vm_provisioning_vm.username | default(vmware_vm_provisioning_username | default(omit)) }}"
-        validate_certs: "{{ vmware_vm_provisioning_vm.validate_certs | default(vmware_vm_provisioning_validate_certs | default(omit)) }}"
+        datacenter: "{{ vmware_vm_provisioning_vm_tmp.datacenter | default(vmware_vm_provisioning_datacenter | default(omit)) }}"
+        folder: "{{ vmware_vm_provisioning_vm_tmp.folder | default(vmware_vm_provisioning_folder | default(omit)) }}"
+        hostname: "{{ vmware_vm_provisioning_vm_tmp.hostname | default(vmware_vm_provisioning_hostname | default(omit)) }}"
+        name: "{{ vmware_vm_provisioning_vm_tmp.name }}"
+        password: "{{ vmware_vm_provisioning_vm_tmp.password | default(vmware_vm_provisioning_password | default(omit)) }}"
+        port: "{{ vmware_vm_provisioning_vm_tmp.port | default(vmware_vm_provisioning_port | default(omit)) }}"
+        username: "{{ vmware_vm_provisioning_vm_tmp.username | default(vmware_vm_provisioning_username | default(omit)) }}"
+        validate_certs: "{{ vmware_vm_provisioning_vm_tmp.validate_certs | default(vmware_vm_provisioning_validate_certs | default(omit)) }}"
         schema: vsphere
       changed_when: no
       failed_when: no
       register: vmware_vm_provisioning_exists
+
+    - name: Set variable with enriched VM facts
+      set_fact:
+        vmware_vm_provisioning_vm: "{{
+          vmware_vm_provisioning_vm_tmp |
+          enrich_vm(
+            vmware_vm_provisioning_exists,
+            vmware_vm_provisioning_vm_tmp.add_facts | default(vmware_vm_provisioning_add_facts | default([]))
+          ) }}"
 
     - name: Power off VM
       local_action:
@@ -177,4 +186,4 @@
             vmware_vm_provisioning_vm.state != 'absent'
         ) and vmware_vm_provisioning_state != 'absent'
   when: >
-    vmware_vm_provisioning_vm is defined
+    vmware_vm_provisioning_vm_tmp is defined
