@@ -19,8 +19,6 @@
         username: "{{ vmware_vm_provisioning_vm.username | default(vmware_vm_provisioning_username | default(omit)) }}"
         validate_certs: "{{ vmware_vm_provisioning_vm.validate_certs | default(vmware_vm_provisioning_validate_certs | default(omit)) }}"
         schema: vsphere
-        properties:
-          - config.uuid
       changed_when: no
       failed_when: no
       register: vmware_vm_provisioning_exists
