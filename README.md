@@ -72,6 +72,9 @@ Examples
           num_cpus: 2
           memory_mb: 16384
           nested_virt: yes
+        # This will power off the VM in order to be able to set newly set
+        # properties (e.g. increased RAM, CPUs, ...)
+        state: changed
 
       # Third VM
       - name: test03

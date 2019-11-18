@@ -37,3 +37,6 @@ vmware_vm_provisioning_vms: []
 
 # SCSI controller ID used for the disk detachment
 #vmware_vm_provisioning_scsi_controller: 0
+
+# Power off VM before provisioning it when state is set to 'changed'
+vmware_vm_provisioning_changed_poweroff: yes
