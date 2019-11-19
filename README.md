@@ -285,7 +285,7 @@ vmware_vm_provisioning_vms: []
 #vmware_vm_provisioning_customization_spec: null
 #vmware_vm_provisioning_customvalues: null
 #vmware_vm_provisioning_datacenter: null
-#vmware_vm_provisioning_disk: null
+#vmware_vm_provisioning_disks: null
 #vmware_vm_provisioning_esxi_hostname: null
 #vmware_vm_provisioning_folder: null
 #vmware_vm_provisioning_force: null

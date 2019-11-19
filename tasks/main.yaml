@@ -82,7 +82,7 @@
             port: "{{ vmware_vm_provisioning_vm.port | default(vmware_vm_provisioning_port | default(omit)) }}"
             username: "{{ vmware_vm_provisioning_vm.username | default(vmware_vm_provisioning_username | default(omit)) }}"
             validate_certs: "{{ vmware_vm_provisioning_vm.validate_certs | default(vmware_vm_provisioning_validate_certs | default(omit)) }}"
-          register: vmware_vm_provisioning_vm_disk_facts
+          register: vmware_vm_provisioning_vm_disk_info
 
         - name: Info about disk being detached
           debug:
@@ -90,12 +90,12 @@
               Detaching
               controler={{ vmware_vm_provisioning_scsi_controller | default(item._scsi_controller | default(0)) }}
               unit={{ ansible_loop.index0 }}
-              path='{{ vmware_vm_provisioning_vm_disk_facts.guest_disk_facts[ansible_loop.index0 | string].backing_filename }}'
+              path='{{ vmware_vm_provisioning_vm_disk_info.guest_disk_info[ansible_loop.index0 | string].backing_filename }}'
           when: >
             '_userdata' in item and
             item['_userdata'] == true and
-            ansible_loop.index0 | string in vmware_vm_provisioning_vm_disk_facts.guest_disk_facts
-          loop: "{{ vmware_vm_provisioning_vm.disks | default(vmware_vm_provisioning_disk | default([])) }}"
+            ansible_loop.index0 | string in vmware_vm_provisioning_vm_disk_info.guest_disk_info
+          loop: "{{ vmware_vm_provisioning_vm.disks | default(vmware_vm_provisioning_disks | default([])) }}"
           loop_control:
             extended: yes
 
@@ -118,8 +118,8 @@
           when: >
             '_userdata' in item and
             item['_userdata'] == true and
-            ansible_loop.index0 | string in vmware_vm_provisioning_vm_disk_facts.guest_disk_facts
-          loop: "{{ vmware_vm_provisioning_vm.disks | default(vmware_vm_provisioning_disk | default([])) }}"
+            ansible_loop.index0 | string in vmware_vm_provisioning_vm_disk_info.guest_disk_info
+          loop: "{{ vmware_vm_provisioning_vm.disks | default(vmware_vm_provisioning_disks | default([])) }}"
           loop_control:
             extended: yes
       when: >
@@ -169,7 +169,7 @@
         customization_spec: "{{ vmware_vm_provisioning_vm.customization_spec | default(vmware_vm_provisioning_customization_spec | default(omit)) }}"
         customvalues: "{{ vmware_vm_provisioning_vm.customvalues | default(vmware_vm_provisioning_customvalues | default(omit)) }}"
         datacenter: "{{ vmware_vm_provisioning_vm.datacenter | default(vmware_vm_provisioning_datacenter | default(omit)) }}"
-        disk: "{{ vmware_vm_provisioning_vm.disks | default(vmware_vm_provisioning_disk | default(omit)) | modify_disks(vmware_vm_provisioning_vm.state | default(vmware_vm_provisioning_state), vmware_vm_provisioning_vm_disk_facts) }}"
+        disk: "{{ vmware_vm_provisioning_vm.disks | default(vmware_vm_provisioning_disks | default(omit)) | modify_disks(vmware_vm_provisioning_vm.state | default(vmware_vm_provisioning_state), vmware_vm_provisioning_vm_disk_info) }}"
         esxi_hostname: "{{ vmware_vm_provisioning_vm.esxi_hostname | default(vmware_vm_provisioning_esxi_hostname | default(omit)) }}"
         folder: "{{ vmware_vm_provisioning_vm.folder | default(vmware_vm_provisioning_folder | default(omit)) }}"
         force: "{{ vmware_vm_provisioning_vm.force | default(vmware_vm_provisioning_force | default(omit)) }}"
