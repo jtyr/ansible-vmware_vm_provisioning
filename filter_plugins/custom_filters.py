@@ -186,10 +186,10 @@ def modify_disks(data, state, facts, prefix='_'):
                         userdata_key in disk and
                         disk[userdata_key] is True and
                         facts is not None and
-                        'guest_disk_facts' in facts and
-                        unit in facts['guest_disk_facts']):
+                        'guest_disk_info' in facts and
+                        unit in facts['guest_disk_info']):
                     # Replace whatever disk definition with the filename only
-                    unit_facts = facts['guest_disk_facts'][unit]
+                    unit_facts = facts['guest_disk_info'][unit]
                     record['filename'] = unit_facts['backing_filename']
                 else:
                     for k, v in disk.items():
