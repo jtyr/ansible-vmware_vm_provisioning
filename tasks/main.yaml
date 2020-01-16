@@ -2,9 +2,9 @@
 
 - name: Set variable with VM details
   set_fact:
-    vmware_vm_provisioning_vm_tmp: "{{ (vmware_vm_provisioning_vms | selectattr('name', 'equalto', inventory_hostname) | list)[0] }}"
+    vmware_vm_provisioning_vm_tmp: "{{ (vmware_vm_provisioning_vms | selectattr('name', 'match', '^%s$' % inventory_hostname) | list)[0] }}"
   when: >
-    vmware_vm_provisioning_vms | selectattr('name', 'equalto', inventory_hostname) | list | length > 0
+    vmware_vm_provisioning_vms | selectattr('name', 'match', '^%s$' % inventory_hostname) | list | length > 0
 
 - block:
     - name: Check if the VM already exists
