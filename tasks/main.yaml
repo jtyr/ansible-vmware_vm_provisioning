@@ -193,6 +193,7 @@
         validate_certs: "{{ vmware_vm_provisioning_vm.validate_certs | default(vmware_vm_provisioning_validate_certs | default(omit)) }}"
         vapp_properties: "{{ vmware_vm_provisioning_vm.vapp_properties | default(vmware_vm_provisioning_vapp_properties | default(omit)) }}"
         wait_for_ip_address: "{{ vmware_vm_provisioning_vm.wait_for_ip_address | default(vmware_vm_provisioning_wait_for_ip_address | default(omit)) }}"
+        wait_for_customization: "{{ vmware_vm_provisioning_vm.wait_for_customization | default(vmware_vm_provisioning_wait_for_customization | default(omit)) }}"
       when: >
         (
             'state' not in vmware_vm_provisioning_vm or
