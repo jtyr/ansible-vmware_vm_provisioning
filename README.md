@@ -43,7 +43,7 @@ Examples
             ip: 192.168.1.178
             netmask: 255.255.255.0
             gateway: 192.168.1.1
-        hadrware:
+        hardware:
           num_cpus: 2
           memory_mb: 2048
 
@@ -68,7 +68,7 @@ Examples
             ip: 10.0.0.178
             netmask: 255.255.255.0
             gateway: 10.0.0.1
-        hadrware:
+        hardware:
           num_cpus: 2
           memory_mb: 16384
           nested_virt: yes
@@ -96,7 +96,7 @@ Examples
             ip: 10.0.0.179
             netmask: 255.255.255.0
             gateway: 10.0.0.1
-        hadrware:
+        hardware:
           num_cpus: 2
           memory_mb: 16384
           nested_virt: yes
